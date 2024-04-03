@@ -1,0 +1,14 @@
+﻿int a = 5+2;
+int b = scan();
+for (int i = 0; i < b; i++)
+{
+    if (i%2==0)
+    {
+        a = a+i;
+    }
+}
+print("result" + a);
+return a;
+Vector2 a = new Vector2(5,2);
+Vector2 b = new Vector2(1,5);
+a = a * 5;

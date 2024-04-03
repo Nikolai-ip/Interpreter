@@ -1,0 +1,6 @@
+﻿Vector2 a = new Vector2(5,2) + new Vector2(10,17);
+int b = 2;
+int c = b * 10 - (20*2);
+Vector2 result = (new Vector2(10,51) * b * (b * 10 - (20*2))) - new Vector2(5,2);
+Vector2 result2 = result - (a*c);
+return result2;

@@ -1,0 +1,5 @@
+﻿string c;
+c = scan();
+string b = "World";
+c = c + b;
+print(c);
