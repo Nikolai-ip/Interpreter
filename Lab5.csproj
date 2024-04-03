@@ -63,12 +63,12 @@
         <Compile Include="CalculatorModule\ExpressionValidator.cs" />
         <Compile Include="CharChecker.cs" />
         <Compile Include="ExpressionReplacer.cs" />
+        <Compile Include="ForKeyWord.cs" />
+        <Compile Include="ForKeyWordFabric.cs" />
         <Compile Include="Interpreter.cs" />
         <Compile Include="InterpreterContext.cs" />
         <Compile Include="InterpreterFabric.cs" />
-        <Compile Include="KeyWords\ForKeyWord.cs" />
-        <Compile Include="KeyWords\ForKeyWordFabric.cs" />
-        <Compile Include="KeyWords\KeyWord.cs" />
+        <Compile Include="KeyWord.cs" />
         <Compile Include="MemberReplacer.cs" />
         <Compile Include="Program.cs" />
         <Compile Include="Properties\AssemblyInfo.cs" />

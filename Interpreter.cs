@@ -11,7 +11,10 @@ namespace Lab5
         private int _pc = 0;
         private VariableParser _variableParser;
         private InterpreterContext _interpreterContext;
+<<<<<<< HEAD
         public InterpreterContext InterpreterContext => _interpreterContext;
+=======
+>>>>>>> fb11c39 (Initial commit)
         private BooleanExpressionSolver _booleanExpressionSolver;
         private Stack<ForKeyWord> _keyWordsStack = new Stack<ForKeyWord>();
         private ForKeyWordFabric _forKeyWordFabric;
