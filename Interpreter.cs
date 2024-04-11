@@ -11,6 +11,7 @@ namespace Lab5
         private int _pc = 0;
         private VariableParser _variableParser;
         private InterpreterContext _interpreterContext;
+        public InterpreterContext InterpreterContext => _interpreterContext;
         private BooleanExpressionSolver _booleanExpressionSolver;
         private Stack<ForKeyWord> _keyWordsStack = new Stack<ForKeyWord>();
         private ForKeyWordFabric _forKeyWordFabric;
@@ -25,7 +26,7 @@ namespace Lab5
                 do
                 {
                     codeLine = GetCodeLine(programText, _pc).Trim();
-                    if (codeLine == null)
+                    if (string.IsNullOrEmpty(codeLine))
                         break;
                     HandleCodeLine(codeLine);
                     _pc++;

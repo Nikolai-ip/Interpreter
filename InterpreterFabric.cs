@@ -8,8 +8,8 @@ namespace Lab5
         {
             var interpreterContext = new InterpreterContext();
             var interpreter = new Interpreter(interpreterContext);
-            var replacer = new ExpressionReplacer(interpreterContext);
             var calc = new CalculatorProxy();
+            var replacer = new ExpressionReplacer(interpreterContext, calc);
             var variableParser = new VariableParser(replacer,calc);
             var booleanExpressionSolver = new BooleanExpressionSolver(calc,replacer);
             interpreter.

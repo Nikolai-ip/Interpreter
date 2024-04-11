@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Numerics;
 using System.Reflection;
+using lab1;
 
 namespace Lab5
 {
@@ -15,11 +16,17 @@ namespace Lab5
         private ReplacerHelper _replacerHelper = new ReplacerHelper();
         private CharChecker _charChecker = new CharChecker();
         private MemberReplacer _memberReplacer;
+
         public string ReplaceTokensInExpression(string expression)
         {
-            string token = "";
             expression = _stringCleaner.RemoveSpaces(expression);
             expression = _memberReplacer.ReplaceMembers(expression);
+            expression = ReplaceVariablesInExpression(expression);
+            return expression;
+        }
+        private string ReplaceVariablesInExpression(string expression)
+        {
+            string token = "";
             for (var i = 0; i < expression.Length; i++)
             {
                 var c = expression[i];
@@ -70,13 +77,12 @@ namespace Lab5
                    !_charChecker.IsBracket(c) && !_charChecker.IsCompareOperator(c) && !c.Equals(' ') ||
                    _charChecker.NumberIsPartOfVariableName(c, token);
         }
-
         
-      
-        public ExpressionReplacer(InterpreterContext interpreterContext)
+        public ExpressionReplacer(InterpreterContext interpreterContext, CalculatorProxy calc)
         {
             _interpreterContext = interpreterContext;
-            _memberReplacer = new MemberReplacer(_interpreterContext);
+            _memberReplacer = new MemberReplacer(interpreterContext, calc);
+            _memberReplacer.InitExpressionReplacer(this);
         }
         
     }
