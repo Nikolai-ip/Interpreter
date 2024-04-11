@@ -20,6 +20,7 @@ namespace Lab5
             int dotIndex = 0;
             for (int i = 0; i < countOfDots; i++)
             {
+                if (dotIndex>=expression.Length) break;
                 dotIndex = expression.IndexOf('.',dotIndex);
                 string entityStr = GetWordByDotSide(dotIndex, expression, true);
                 string memberName = GetWordByDotSide(dotIndex, expression, false);
@@ -30,14 +31,9 @@ namespace Lab5
                         int openBracketIndex = dotIndex + memberName.Length+1;
                         MethodInfo methodInfo = entityType.GetMethod(memberName);
                         if (methodInfo == null) throw new Exception($"Failed to invoke the method {memberName} on an {entityStr}");
-                        string[] argumentsStrings = _bracketHelper.TakeArgumentsFromBrackets(expression, openBracketIndex);
-                        string[] arguments = new string[argumentsStrings.Length];
-                        for (int j = 0; j < arguments.Length; j++)
-                        {
-                            arguments[i] = _expressionReplacer.ReplaceTokensInExpression(argumentsStrings[i]);
-                        }
-                            
-                        object returnValue = InvokeMethod(argumentsStrings,methodInfo);
+                        string[] arguments = _bracketHelper.TakeArgumentsFromBrackets(expression, openBracketIndex)
+                            .Select(_expressionReplacer.ReplaceTokensInExpression).ToArray();
+                        object returnValue = InvokeMethod(arguments,methodInfo);
                         expression = ReplaceMethodByReturnValue(expression, returnValue, entityStr, memberName, openBracketIndex);
                     }
                     else if (TryGetFieldValue(entityObj,entityType,memberName,out var value) || TryGetPropertyValue(entityObj,entityType,memberName,out value))
