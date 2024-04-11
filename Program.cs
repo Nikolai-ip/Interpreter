@@ -7,7 +7,7 @@ namespace Lab5
     {
         public static void Main(string[] args)
         {
-            string programText = File.ReadAllText("Data/Program2.txt");
+            string programText = File.ReadAllText("Data/Program.txt");
             programText = programText.Replace("\r", "");
             var interpreter = InterpreterFabric.GetInstance();
             interpreter.Interpret(programText);

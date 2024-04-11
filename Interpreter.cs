@@ -26,7 +26,7 @@ namespace Lab5
                 do
                 {
                     codeLine = GetCodeLine(programText, _pc).Trim();
-                    if (codeLine == null)
+                    if (string.IsNullOrEmpty(codeLine))
                         break;
                     HandleCodeLine(codeLine);
                     _pc++;
