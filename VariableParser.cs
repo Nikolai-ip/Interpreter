@@ -1,9 +1,8 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Linq;
 using System.Numerics;
-using System.Text.RegularExpressions;
-using lab1;
+using CalcModule;
+using ExpressionProcessing;
 
 namespace Lab5
 {
@@ -12,11 +11,12 @@ namespace Lab5
         private CalculatorProxy _calculator;
         private ExpressionReplacer _expressionReplacer;
         private VectorInitReplacer _vectorInitReplacer;
+        private BooleanExpressionSolver _booleanExpressionSolver;
         public string GetVariable(string codeLine, string typeStr, out object value)
         {
             string variableName;
             typeStr = typeStr.Trim();
-            codeLine = codeLine.Remove(0, typeStr.Length); // a =
+            codeLine = codeLine.Remove(0, typeStr.Length); 
             Type variableType = GetVariableType(typeStr);
             value = InitializeVariable(variableType);
            
@@ -94,6 +94,10 @@ namespace Lab5
                     return vector2;
             }
 
+            if (type == typeof(bool))
+            {
+                return _booleanExpressionSolver.Solve(expression);
+            }
             return null;
         }
 
@@ -112,11 +116,12 @@ namespace Lab5
 
        
 
-        public VariableParser(ExpressionReplacer expressionReplacer, CalculatorProxy calculator)
+        public VariableParser(ExpressionReplacer expressionReplacer, CalculatorProxy calculator, BooleanExpressionSolver booleanExpressionSolver)
         {
             _expressionReplacer = expressionReplacer;
             _calculator = calculator;
             _vectorInitReplacer = new VectorInitReplacer(_expressionReplacer, _calculator);
+            _booleanExpressionSolver = booleanExpressionSolver;
         }
     }
 }

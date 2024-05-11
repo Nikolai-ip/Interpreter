@@ -1,11 +1,9 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Linq;
-using System.Numerics;
-using System.Reflection;
-using lab1;
+using CalcModule;
+using Lab5;
 
-namespace Lab5
+namespace ExpressionProcessing
 {
     public class ExpressionReplacer
     {

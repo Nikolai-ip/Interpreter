@@ -2,7 +2,10 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using lab1;
+using System.Text.RegularExpressions;
+using ExpressionProcessing;
+using CalcModule;
+using KeyWord;
 
 namespace Lab5
 {
@@ -17,15 +20,19 @@ namespace Lab5
         private ForKeyWordFabric _forKeyWordFabric;
         private ExpressionReplacer _expressionReplacer;
         private CalculatorProxy _calculator = new CalculatorProxy();
+        private VectorExpressionHelper _vectorExpressionHelper = new VectorExpressionHelper();
+        private ConditionKeyWord _conditionKeyWord;
         public object ReturnValue { get; private set; }
+        private string _programText;
         public void Interpret(string programText)
         {
+            _programText = programText;
             try
             {
                 string codeLine = "";
                 do
                 {
-                    codeLine = GetCodeLine(programText, _pc).Trim();
+                    codeLine = GetCodeLine(_programText, _pc).Trim();
                     if (string.IsNullOrEmpty(codeLine))
                         break;
                     HandleCodeLine(codeLine);
@@ -100,7 +107,22 @@ namespace Lab5
                 codeLine = codeLine.Replace("return", "").Trim();
                 codeLine = codeLine.Remove(codeLine.Length - 1);
                 codeLine = _expressionReplacer.ReplaceTokensInExpression(codeLine);
-                ReturnValue = _calculator.GetResult(codeLine);
+                if (ExpressionIsBool(codeLine))
+                {
+                    ReturnValue = _booleanExpressionSolver.Solve(codeLine);
+                }
+                else
+                {
+                    ReturnValue = _calculator.GetResult(codeLine);
+                }
+            }
+
+            if (firstOperator == "if")
+            {
+                if (_conditionKeyWord.TryHandleCodeLine(_programText,ref _pc))
+                {
+                    
+                }
             }
             
         }
@@ -140,11 +162,11 @@ namespace Lab5
 
         private void DoInstractionWithVariable(string codeLine, Type variableType)
         {
-            string variableName = new string(codeLine.TakeWhile(c => c != '=').ToArray());//i
+            string variableName = new string(codeLine.TakeWhile(c => c != '=').ToArray());
             variableName = variableName.Trim();
             if (!_interpreterContext.Variables.ContainsKey(variableName)) throw new Exception("Неизвестная переменная");
             string expression = new string(codeLine.SkipWhile(c => c != '=').ToArray());
-            expression = expression.Trim().Remove(0,1).Trim();//i+1
+            expression = expression.Trim().Remove(0,1).Trim();
             expression = expression.Remove(expression.Length - 1);
             expression = _expressionReplacer.ReplaceTokensInExpression(expression);
             object result = _calculator.GetResult(expression);
@@ -158,7 +180,16 @@ namespace Lab5
                 codeLine = codeLine.Remove(codeLine.Length - 1);
             return codeLine;
         }
-        
+
+        private bool ExpressionIsBool(string expression)
+        {
+            if (_vectorExpressionHelper.ExpressionHasVector(expression))
+                return false;
+            string pattern = @"(False|True|<|>|>=|<=|==|!=)";
+            return Regex.IsMatch(expression, pattern);  
+        }
+
+
         public Interpreter InitVariableParser(VariableParser variableParser)
         {
             _variableParser = variableParser;
@@ -179,6 +210,12 @@ namespace Lab5
         public Interpreter InitForKeyKodeFabric()
         {
             _forKeyWordFabric = new ForKeyWordFabric(_variableParser);
+            return this;
+        }
+
+        public Interpreter InitConditionKeyWord()
+        {
+            _conditionKeyWord = new ConditionKeyWord(_booleanExpressionSolver);
             return this;
         }
         public Interpreter(InterpreterContext interpreterContext)

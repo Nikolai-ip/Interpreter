@@ -1,6 +1,6 @@
 ﻿using System.Linq;
 
-namespace Lab5
+namespace ExpressionProcessing
 {
     public class CharChecker
     {

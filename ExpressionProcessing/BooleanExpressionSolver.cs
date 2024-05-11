@@ -1,14 +1,14 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using lab1;
+using CalcModule;
 
-namespace Lab5
+namespace ExpressionProcessing
 {
     public class BooleanExpressionSolver
     {
-        private Dictionary<string, Func<float, float, bool>> _comparisonFunctions =
-            new Dictionary<string, Func<float, float, bool>>()
+        private Dictionary<string, Func<double, double, bool>> _comparisonFunctions =
+            new Dictionary<string, Func<double, double, bool>>()
             {
                 { ">", (a, b) => a > b },
                 { "<", (a, b) => a < b },
@@ -27,12 +27,18 @@ namespace Lab5
             string rightSubExpression = new string(expression.Skip(index + comparisonOperator.Length).ToArray());
             string replacedLeftExpression = _expressionReplacer.ReplaceTokensInExpression(leftSubExpression);
             string replacedRightExpression = _expressionReplacer.ReplaceTokensInExpression(rightSubExpression);
-            float? leftExDigital = (float)_calculatorProxy.GetResult(replacedLeftExpression);
-            float? rightExDigital = (float)_calculatorProxy.GetResult(replacedRightExpression);
+            if (replacedLeftExpression == "True")
+                return true;
+            if (replacedLeftExpression == "False")
+                return false;
+            double? leftExDigital = (double)_calculatorProxy.GetResult(replacedLeftExpression);
+            double? rightExDigital = (double)_calculatorProxy.GetResult(replacedRightExpression);
+
             if (leftExDigital.HasValue && rightExDigital.HasValue)
             {
                 return _comparisonFunctions[comparisonOperator](leftExDigital.Value, rightExDigital.Value);
             }
+
             throw new Exception("Выражение для сравнения составленно некорректно");
 
         }

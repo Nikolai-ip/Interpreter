@@ -2,23 +2,23 @@
 using System.Collections.Generic;
 using System.Linq;
 
-namespace Lab5
+namespace ExpressionProcessing
 {
     public class BracketHelper
     {
-        public int GetCloseBracketIndex(string inputStr, int startIndex)
+        public int GetCloseBracketIndex(string inputStr, int startIndex, char openBracket, char closeBracket)
         {
             var bracketStack = new Stack<char>();
-            bracketStack.Push('(');
+            bracketStack.Push(openBracket);
             for (int i = startIndex; i < inputStr.Length; i++)
             {
                 char symbol = inputStr[i];
-                if (symbol.Equals('('))
+                if (symbol.Equals(openBracket))
                 {
-                    bracketStack.Push('(');
+                    bracketStack.Push(closeBracket);
                 }
 
-                if (symbol.Equals(')'))
+                if (symbol.Equals(closeBracket))
                 {
                     bracketStack.Pop();
                     if (bracketStack.Count == 0) return i;
@@ -29,13 +29,13 @@ namespace Lab5
         }
         public string GetExpressionInBracket(int startIndex, string expression)
         {
-            int endIndex = GetCloseBracketIndex(expression, startIndex);
+            int endIndex = GetCloseBracketIndex(expression, startIndex,'(',')');
             string result = new string(expression.Skip(startIndex).Take(endIndex - startIndex).ToArray());
             return result;
         }
         public string[] TakeArgumentsFromBrackets(string expression, int bracketIndex)
         {
-            int finishBracketIndex = GetCloseBracketIndex(expression, bracketIndex+1);
+            int finishBracketIndex = GetCloseBracketIndex(expression, bracketIndex+1,'(',')');
             string bracketExpression = new string(expression.Skip(bracketIndex+1).Take(finishBracketIndex - (bracketIndex+1)).ToArray());
             List<string> arguments = new List<string>();
             string argument = "";
@@ -44,7 +44,7 @@ namespace Lab5
                 var symbol = bracketExpression[i];
                 if (symbol.Equals('('))
                 {
-                    int closeBracketIndex = GetCloseBracketIndex(bracketExpression, i+1); //12
+                    int closeBracketIndex = GetCloseBracketIndex(bracketExpression, i+1,'(',')'); //12
                     string bracketArgumentExpression = new string(bracketExpression.Skip(i).Take(closeBracketIndex - (i-1)).ToArray());
                     argument += bracketArgumentExpression;
                     i += bracketArgumentExpression.Length-1;

@@ -1,6 +1,8 @@
 ﻿using System;
-using System.Numerics;
-using lab1;
+using System.Collections.Generic;
+using System.Linq;
+using CalcModule;
+using ExpressionProcessing;
 
 namespace Lab5
 {
@@ -9,6 +11,7 @@ namespace Lab5
         private BracketHelper _bracketHelper = new BracketHelper();
         private ExpressionReplacer _expressionReplacer;
         private CalculatorProxy _calculator;
+        private StringCleaner _stringCleaner = new StringCleaner();
         public VectorInitReplacer(ExpressionReplacer expressionReplacer, CalculatorProxy calculator)
         {
             _expressionReplacer = expressionReplacer;
@@ -25,11 +28,12 @@ namespace Lab5
                 {
                     expression = expression.Remove(startIndex, 1);
                     expression = expression.Insert(startIndex, "<");
-                    int closeBracketIndex = _bracketHelper.GetCloseBracketIndex(expression, startIndex);
+                    int closeBracketIndex = _bracketHelper.GetCloseBracketIndex(expression, startIndex,'(',')');
                     expression = expression.Remove(closeBracketIndex, 1);
                     expression = expression.Insert(closeBracketIndex, ">");
-                    string xExpression = GetStrWhile(expression, startIndex+1, ',');
-                    string yExpression = GetStrWhile(expression, startIndex + xExpression.Length + 2, '>');
+                    string[] arguments = GetArguments(expression, startIndex + 1);
+                    string xExpression = arguments[0];
+                    string yExpression = arguments[1];
                     string xValueReplaced = _expressionReplacer.ReplaceTokensInExpression(xExpression);
                     string yValueReplaced = _expressionReplacer.ReplaceTokensInExpression(yExpression);
                     string xValueCalculated = _calculator.GetResult(xValueReplaced).ToString();
@@ -49,19 +53,38 @@ namespace Lab5
                 
             }
 
-            return expression;
+            return _stringCleaner.RemoveSpaces(expression);
         }
-        private string GetStrWhile(string str, int startIndex, char stopSymbol)
+        private string[] GetArguments(string expression, int startIndex)
         {
-            string result = "";
-            for (int i = startIndex; i < str.Length; i++)
+            List<string> arguments = new List<string>();
+            string argument = "";
+            for (int i = startIndex; i < expression.Length; i++)
             {
-                if (str[i].Equals(stopSymbol))
-                    break;
-                result += str[i];
+                var symbol = expression[i];
+                if (symbol == '>') break;
+                if (symbol.Equals('('))
+                {
+                    int closeBracketIndex = _bracketHelper.GetCloseBracketIndex(expression, i+1,'(',')');
+                    string bracketArgumentExpression = new string(expression.Skip(i).Take(closeBracketIndex - (i-1)).ToArray());
+                    argument += bracketArgumentExpression;
+                    i += bracketArgumentExpression.Length-1;
+                    continue;
+                }
+                if (symbol.Equals(','))
+                {
+                    if (argument == "") throw new Exception("Vector member can not be empty");
+                    arguments.Add(argument);
+                    argument = "";
+                }   
+                else
+                {
+                    argument += symbol;
+                }
             }
-
-            return result;
+            if (argument!="")
+                arguments.Add(argument);
+            return arguments.ToArray();
         }
     }
 }

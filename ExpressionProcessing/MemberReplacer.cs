@@ -1,10 +1,10 @@
 ﻿using System;
 using System.Linq;
 using System.Reflection;
-using lab1;
-using Microsoft.Win32;
+using CalcModule;
+using Lab5;
 
-namespace Lab5
+namespace ExpressionProcessing
 {
     public class MemberReplacer
     {
@@ -31,8 +31,8 @@ namespace Lab5
                         int openBracketIndex = dotIndex + memberName.Length+1;
                         MethodInfo methodInfo = entityType.GetMethod(memberName);
                         if (methodInfo == null) throw new Exception($"Failed to invoke the method {memberName} on an {entityStr}");
-                        string[] arguments = _bracketHelper.TakeArgumentsFromBrackets(expression, openBracketIndex)
-                            .Select(_expressionReplacer.ReplaceTokensInExpression).ToArray();
+                        string[] arguments = _bracketHelper.TakeArgumentsFromBrackets(expression, openBracketIndex);
+                        arguments = arguments.Select(_expressionReplacer.ReplaceTokensInExpression).ToArray();
                         object returnValue = InvokeMethod(arguments,methodInfo);
                         expression = ReplaceMethodByReturnValue(expression, returnValue, entityStr, memberName, openBracketIndex);
                     }
@@ -136,7 +136,7 @@ namespace Lab5
         private string ReplaceMethodByReturnValue(string expression, object returnValue, string entityStr,
             string methodName, int openBracketIndex)
         {
-            int closeBracketIndex = _bracketHelper.GetCloseBracketIndex(expression, openBracketIndex+1);
+            int closeBracketIndex = _bracketHelper.GetCloseBracketIndex(expression, openBracketIndex+1, '(',')');
             string bracketExpression = new string(expression.Skip(openBracketIndex)
                 .Take(closeBracketIndex - (openBracketIndex-1)).ToArray());
             string entityWithMember = entityStr + "." + methodName;

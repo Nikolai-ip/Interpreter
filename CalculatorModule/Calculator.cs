@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Numerics;
 
-namespace lab1
+namespace CalcModule
 {
     static class Calculator
     {

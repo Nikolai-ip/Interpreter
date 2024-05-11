@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using Lab5;
 
-namespace lab1
+namespace CalcModule
 {
     internal static class ExpressionTokenizer
     {
